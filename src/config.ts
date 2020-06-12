@@ -10,7 +10,7 @@ function env(name: string): string {
 }
 
 export const config = {
-    cache_dir: env('APP_CACHE_DIR'),
+    ssm_parameter: env('SSM_PARAMETER'),
     feedly_client_id: env('FEEDLY_CLIENT_ID'),
     feedly_client_secret: env('FEEDLY_CLIENT_SECRET'),
     post_target_url: env('POST_TARGET_URL'),

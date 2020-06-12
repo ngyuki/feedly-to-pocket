@@ -28,7 +28,7 @@ async function handler(req: http.IncomingMessage): Promise<boolean> {
         return false;
     }
     const token = await api.authorization(code);
-    await store.save_access_token(token);
+    await store.save_access_token_to_file(token);
     return true;
 }
 
