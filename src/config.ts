@@ -10,9 +10,9 @@ function env(name: string): string {
 }
 
 export const config = {
-    ssm_parameter: env('SSM_PARAMETER'),
+    ssm_parameter_feedly: env('SSM_PARAMETER_FEEDLY'),
+    ssm_parameter_pocket: env('SSM_PARAMETER_POCKET'),
     feedly_client_id: env('FEEDLY_CLIENT_ID'),
     feedly_client_secret: env('FEEDLY_CLIENT_SECRET'),
-    post_target_url: env('POST_TARGET_URL'),
-    post_field_name: env('POST_FIELD_NAME'),
+    pocket_consumer_key: env('POCKET_CONSUMER_KEY'),
 } as const;

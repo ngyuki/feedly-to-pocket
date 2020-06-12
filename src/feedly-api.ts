@@ -3,22 +3,22 @@ import querystring from 'querystring'
 import { config } from './config'
 import { FeedlyToken, FeedlyEntries } from './types'
 
-export function get_authorization_url() {
+export function get_authorization_url(redirect_uri: string) {
     const query = querystring.stringify({
         response_type: 'code',
         client_id: config.feedly_client_id,
-        redirect_uri: 'http://localhost:8080',
+        redirect_uri: redirect_uri,
         scope: 'https://cloud.feedly.com/subscriptions',
     });
     return `https://cloud.feedly.com/v3/auth/auth?${query}`;
 }
 
-export async function authorization(code: string): Promise<FeedlyToken> {
+export async function authorization(redirect_uri: string, code: string): Promise<FeedlyToken> {
     const res = await axios.post('http://cloud.feedly.com/v3/auth/token', {
         client_id: config.feedly_client_id,
         client_secret: config.feedly_client_secret,
         grant_type: 'authorization_code',
-        redirect_uri: 'http://localhost:8080',
+        redirect_uri: redirect_uri,
         code: code,
     });
     return {
