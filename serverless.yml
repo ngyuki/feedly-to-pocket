@@ -1,0 +1,44 @@
+service: feedly-to-pocket
+
+provider:
+  name: aws
+  profile: ${env:AWS_PROFILE}
+  region: ${env:AWS_REGION}
+  runtime: nodejs12.x
+  memorySize: 128
+  timeout: 30
+  logRetentionInDays: 1
+  versionFunctions: false
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "ssm:GetParameter"
+        - "ssm:PutParameter"
+      Resource: "*"
+
+package:
+  exclude:
+    - '**'
+    - '!dist/**'
+    - '!node_modules/**'
+
+functions:
+  main:
+    handler: dist/main.handler
+    environment:
+      SSM_PARAMETER: ${env:SSM_PARAMETER}
+      FEEDLY_CLIENT_ID: ${env:FEEDLY_CLIENT_ID}
+      FEEDLY_CLIENT_SECRET: ${env:FEEDLY_CLIENT_SECRET}
+      POST_TARGET_URL: ${env:POST_TARGET_URL}
+      POST_FIELD_NAME: ${env:POST_FIELD_NAME}
+    events:
+      - schedule: cron(*/10 * * * ? *)
+
+resources:
+  Resources:
+    token:
+      Type: AWS::SSM::Parameter
+      Properties:
+        Name: ${env:SSM_PARAMETER}
+        Value: ${file(./data/feedly_token.txt)}
+        Type: String

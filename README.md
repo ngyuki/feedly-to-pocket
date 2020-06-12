@@ -9,8 +9,8 @@ open http://localhost:8080/
 
 # 認証が終わったら↑のサーバを停止する
 
-# 動作確認
-node dist/run.js
+# デプロイ
+serverless deploy -v
 ```
 
 ## link
