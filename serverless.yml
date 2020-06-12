@@ -28,6 +28,15 @@ provider:
               - { Ref: AWS::AccountId }
               - Fn::Join: [ '', [ parameter, { Ref: PocketToken } ]]
 
+    - Effect: "Allow"
+      Action:
+        - "sns:Publish"
+      Resource:
+        - Ref: NotifyFailure
+
+plugins:
+  - serverless-pseudo-parameters
+
 package:
   exclude:
     - '**'
@@ -45,6 +54,14 @@ functions:
       POCKET_CONSUMER_KEY: ${env:POCKET_CONSUMER_KEY}
     events:
       - schedule: cron(*/10 * * * ? *)
+    destinations:
+      onFailure: failure
+
+  failure:
+    handler: dist/failure.handler
+    environment:
+      SNS_TOPIC_ARN:
+        Ref: NotifyFailure
 
 resources:
   Resources:
@@ -61,3 +78,12 @@ resources:
         Name: ${env:SSM_PARAMETER_POCKET}
         Value: ${file(./data/pocket_token.txt)}
         Type: String
+
+    NotifyFailure:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${self:service}-${self:provider.stage}-failure
+        DisplayName: FAILURE ${self:service}-${self:provider.stage}
+        Subscription:
+          - Protocol: email
+            Endpoint: ${env:NOTIFY_FAILURE_EMAIL}
