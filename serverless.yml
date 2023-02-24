@@ -4,7 +4,7 @@ provider:
   name: aws
   profile: ${env:AWS_PROFILE}
   region: ${env:AWS_REGION}
-  runtime: nodejs12.x
+  runtime: nodejs16.x
   memorySize: 128
   timeout: 30
   logRetentionInDays: 1
@@ -33,9 +33,6 @@ provider:
         - "sns:Publish"
       Resource:
         - Ref: NotifyFailure
-
-plugins:
-  - serverless-pseudo-parameters
 
 package:
   exclude:
@@ -82,8 +79,8 @@ resources:
     NotifyFailure:
       Type: AWS::SNS::Topic
       Properties:
-        TopicName: ${self:service}-${self:provider.stage}-failure
-        DisplayName: FAILURE ${self:service}-${self:provider.stage}
+        TopicName: ${self:service}-${sls:stage}-failure
+        DisplayName: FAILURE ${self:service}-${sls:stage}
         Subscription:
           - Protocol: email
             Endpoint: ${env:NOTIFY_FAILURE_EMAIL}
