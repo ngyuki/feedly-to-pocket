@@ -14,7 +14,7 @@ export function get_authorization_url(redirect_uri: string) {
 }
 
 export async function authorization(redirect_uri: string, code: string): Promise<FeedlyToken> {
-    const res = await axios.post('http://cloud.feedly.com/v3/auth/token', {
+    const res = await axios.post('https://cloud.feedly.com/v3/auth/token', {
         client_id: config.feedly_client_id,
         client_secret: config.feedly_client_secret,
         grant_type: 'authorization_code',
@@ -30,7 +30,7 @@ export async function authorization(redirect_uri: string, code: string): Promise
 }
 
 export async function refresh_access_token(origToken: FeedlyToken): Promise<FeedlyToken> {
-    const res = await axios.post('http://cloud.feedly.com/v3/auth/token', {
+    const res = await axios.post('https://cloud.feedly.com/v3/auth/token', {
         client_id: config.feedly_client_id,
         client_secret: config.feedly_client_secret,
         grant_type: 'refresh_token',
@@ -45,7 +45,7 @@ export async function refresh_access_token(origToken: FeedlyToken): Promise<Feed
 }
 
 export async function fetch_saved_entries(token: FeedlyToken) {
-    const res = await axios.get('http://cloud.feedly.com/v3/streams/contents', {
+    const res = await axios.get('https://cloud.feedly.com/v3/streams/contents', {
         headers: {
             Authorization: `OAuth ${token.access_token}`,
         },
@@ -58,7 +58,7 @@ export async function fetch_saved_entries(token: FeedlyToken) {
 }
 
 export async function unsaved_entries(token: FeedlyToken, entryIds: string[]) {
-    await axios.post('http://cloud.feedly.com/v3/markers', null, {
+    await axios.post('https://cloud.feedly.com/v3/markers', null, {
         headers: {
             Authorization: `OAuth ${token.access_token}`,
         },
