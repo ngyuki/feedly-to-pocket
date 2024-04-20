@@ -58,14 +58,13 @@ export async function fetch_saved_entries(token: FeedlyToken) {
 }
 
 export async function unsaved_entries(token: FeedlyToken, entryIds: string[]) {
-    await axios.post('https://cloud.feedly.com/v3/markers', null, {
+    await axios.post('https://cloud.feedly.com/v3/markers', {
+        action: 'markAsUnsaved',
+        type: 'entries',
+        entryIds: entryIds,
+    }, {
         headers: {
             Authorization: `OAuth ${token.access_token}`,
         },
-        data: {
-            action: 'markAsUnsaved',
-            type: 'entries',
-            entryIds: entryIds,
-        }
     });
 }
