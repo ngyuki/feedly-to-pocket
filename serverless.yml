@@ -2,9 +2,8 @@ service: feedly-to-pocket
 
 provider:
   name: aws
-  profile: ${env:AWS_PROFILE}
   region: ${env:AWS_REGION}
-  runtime: nodejs16.x
+  runtime: nodejs20.x
   memorySize: 128
   timeout: 30
   logRetentionInDays: 1
