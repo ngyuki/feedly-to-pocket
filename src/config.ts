@@ -11,8 +11,9 @@ function env(name: string): string {
 
 export const config = {
     ssm_parameter_feedly: env('SSM_PARAMETER_FEEDLY'),
-    ssm_parameter_pocket: env('SSM_PARAMETER_POCKET'),
+    ssm_parameter_raindrop: env('SSM_PARAMETER_RAINDROP'),
     feedly_client_id: env('FEEDLY_CLIENT_ID'),
     feedly_client_secret: env('FEEDLY_CLIENT_SECRET'),
-    pocket_consumer_key: env('POCKET_CONSUMER_KEY'),
+    raindrop_client_id: env('RAINDROP_CLIENT_ID'),
+    raindrop_client_secret: env('RAINDROP_CLIENT_SECRET'),
 } as const;

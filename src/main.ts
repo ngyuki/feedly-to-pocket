@@ -1,7 +1,7 @@
 import * as store from './store'
 import { FeedlyEntries } from './types'
 import * as feedly from './feedly-api'
-import * as pocket from './pocket-api'
+import * as raindrop from './raindrop-api'
 
 export async function handler() {
     let { token, expired } = await store.load_access_token();
@@ -17,10 +17,15 @@ export async function handler() {
     const { ids, urls } = filter_entries_response(entries);
 
     if (urls.length > 0) {
-        const access_token = await store.load_pocket_access_token();
+        let { token: raindropToken, expired: raindropExpired } = await store.load_raindrop_access_token();
+        if (raindropExpired) {
+            raindropToken = await raindrop.refresh_access_token(raindropToken);
+            store.save_raindrop_access_token(raindropToken);
+            console.log(`refresh raindrop access token`);
+        }
         for (const url of urls) {
-            console.log(`pocket ${url}`);
-            await pocket.add(url, access_token);
+            console.log(`raindrop ${url}`);
+            await raindrop.add(url, raindropToken.access_token);
         }
     }
 

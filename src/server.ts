@@ -4,7 +4,7 @@ import querystring from 'querystring'
 import escape from 'escape-html'
 import * as feedly from './feedly-api'
 import * as store from './store'
-import * as pocket from './pocket-api'
+import * as raindrop from './raindrop-api'
 
 http.createServer(async (req, res) => {
     const ok = await handler(req);
@@ -28,9 +28,9 @@ async function handler(req: http.IncomingMessage): Promise<boolean> {
     if (!code || Array.isArray(code)) {
         return false;
     }
-    if (pathname === '/pocket') {
-        const token = await pocket.oauth_authorize(code);
-        await store.save_pocket_access_token_to_file(token.access_token);
+    if (pathname === '/raindrop') {
+        const token = await raindrop.authorization(get_raindrop_redirect_uri(req), code);
+        await store.save_raindrop_access_token_to_file(token);
     } else {
         const token = await feedly.authorization(get_feedly_redirect_uri(req), code);
         await store.save_access_token_to_file(token);
@@ -42,13 +42,13 @@ function get_feedly_redirect_uri(req: http.IncomingMessage) {
     return `http://${req.headers.host}`;
 }
 
-function get_pocket_redirect_uri(req: http.IncomingMessage) {
-    return `http://${req.headers.host}/pocket`;
+function get_raindrop_redirect_uri(req: http.IncomingMessage) {
+    return `http://${req.headers.host}/raindrop`;
 }
 
 async function render(req: http.IncomingMessage, ok: boolean) {
     const feedly_authorization_url = feedly.get_authorization_url(get_feedly_redirect_uri(req));
-    const pocket_authorize_url = await pocket.get_authorize_url(get_pocket_redirect_uri(req));
+    const raindrop_authorize_url = raindrop.get_authorization_url(get_raindrop_redirect_uri(req));
     return `
         <!doctype html>
         <html>
@@ -58,7 +58,7 @@ async function render(req: http.IncomingMessage, ok: boolean) {
             </head>
             <body>
                 <a href="${escape(feedly_authorization_url)}">Feedly Authorization</a>
-                <a href="${escape(pocket_authorize_url)}">Pocket Authorization</a>
+                <a href="${escape(raindrop_authorize_url)}">Raindrop Authorization</a>
                 <br>
                 ${ok ? 'OK' : ''}
             </body>
