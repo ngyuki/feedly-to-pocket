@@ -1,6 +1,8 @@
 /.env
 /.envrc
 /node_modules/
-/package-lock.json
 /dist/
-/.serverless/
+
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup

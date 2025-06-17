@@ -1,15 +1,19 @@
 {
-  "dependencies": {
-    "aws-sdk": "^2.1603.0",
-    "axios": "^1.6.8",
-    "escape-html": "^1.0.3"
-  },
-  "devDependencies": {
-    "@types/escape-html": "^1.0.4",
-    "@types/node": "^20.12.7",
-    "serverless": "^3.38.0"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  }
+    "name": "feedly-to-raindrop",
+    "version": "1.0.0",
+    "private": true,
+    "dependencies": {
+        "aws-sdk": "^2.1603.0",
+        "axios": "^1.6.8",
+        "escape-html": "^1.0.3"
+    },
+    "devDependencies": {
+        "@types/escape-html": "^1.0.4",
+        "@types/node": "^20.12.7",
+        "serverless": "^3.38.0"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build:lambda": "./scripts/build-lambda.sh"
+    }
 }
