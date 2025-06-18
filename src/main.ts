@@ -14,18 +14,18 @@ export async function handler() {
     const entries = await feedly.fetch_saved_entries(token);
     console.log(`fetch ${entries.items.length} entries`);
 
-    const { ids, urls } = filter_entries_response(entries);
+    const { ids, items } = filter_entries_response(entries);
 
-    if (urls.length > 0) {
+    if (items.length > 0) {
         let { token: raindropToken, expired: raindropExpired } = await store.load_raindrop_access_token();
         if (raindropExpired) {
             raindropToken = await raindrop.refresh_access_token(raindropToken);
             store.save_raindrop_access_token(raindropToken);
             console.log(`refresh raindrop access token`);
         }
-        for (const url of urls) {
-            console.log(`raindrop ${url}`);
-            await raindrop.add(url, raindropToken.access_token);
+        for (const item of items) {
+            console.log(`raindrop ${item.url} - ${item.title}`);
+            await raindrop.add(item.url, raindropToken.access_token, item.title);
         }
     }
 
@@ -37,25 +37,28 @@ export async function handler() {
 
 function filter_entries_response(entries: FeedlyEntries) {
     const ids: string[] = entries.items.map(item => item.id);
-    const urls: string[] = entries.items.map(item => {
+    const items: { url: string, title: string }[] = entries.items.map(item => {
+        let url: string = '';
         if (item.canonicalUrl) {
-            return item.canonicalUrl;
-        }
-        if (item.canonical) {
+            url = item.canonicalUrl;
+        } else if (item.canonical) {
             for (const canonical of item.canonical) {
                 if (canonical.href) {
-                    return canonical.href;
+                    url = canonical.href;
+                    break;
                 }
             }
-        }
-        if (item.alternate) {
+        } else if (item.alternate) {
             for (const canonical of item.alternate) {
                 if (canonical.href) {
-                    return canonical.href;
+                    url = canonical.href;
+                    break;
                 }
             }
+        } else {
+            url = item.originId;
         }
-        return item.originId;
+        return { url, title: item.title };
     });
-    return { ids, urls };
+    return { ids, items };
 }
