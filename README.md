@@ -45,23 +45,20 @@ ts-node -T src/run.ts
 ## デプロイ
 
 ```sh
-# AWS にデプロイ
-npx serverless deploy --verbose
+terraform -chdir=terraform init
+terraform -chdir=terraform plan --replace terraform_data.lambda
+terraform -chdir=terraform apply --replace terraform_data.lambda
 
-# ログを確認
-npx serverless logs -f main --tail
-
-# 手動実行
-npx serverless invoke -f main --log
+aws lambda invoke --function-name feedly-to-raindrop --log-type Tail --query 'LogResult' --output text /dev/stdout | base64 -d
 ```
 
 ## 動作概要
 
-1. 10分間隔で定期実行
+1. AWS Lambda で10分間隔で定期実行（EventBridge Scheduler使用）
 2. Feedly から保存済み記事を取得
-3. 各記事を Raindrop.io にブックマーク追加
+3. 各記事を Raindrop.io にブックマーク追加（タイトル情報も含む）
 4. Feedly の保存済み記事を削除
-5. 失敗時は SNS でメール通知
+5. 失敗時は SNS トピック経由でメール通知
 
 ## link
 
