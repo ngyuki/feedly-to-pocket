@@ -1,23 +1,29 @@
 
 resource "terraform_data" "pack" {
   input = {
-    filename = local.lambda_zip_path
+    filename  = local.lambda_zip_path
+    timestamp = plantimestamp()
   }
 
   provisioner "local-exec" {
     command     = "npm ci && npm run build:lambda"
     working_dir = "${path.module}/.."
   }
+
+  lifecycle {
+    ignore_changes = [input]
+  }
 }
 
 resource "aws_lambda_function" "main" {
-  function_name = local.project
-  role          = aws_iam_role.lambda.arn
-  handler       = "dist/main.handler"
-  runtime       = "nodejs20.x"
-  memory_size   = local.lambda_memory_size
-  timeout       = local.lambda_timeout
-  filename      = terraform_data.pack.output.filename
+  function_name    = local.project
+  role             = aws_iam_role.lambda.arn
+  handler          = "dist/main.handler"
+  runtime          = "nodejs20.x"
+  memory_size      = local.lambda_memory_size
+  timeout          = local.lambda_timeout
+  filename         = terraform_data.pack.output.filename
+  source_code_hash = terraform_data.pack.output.timestamp
 
   environment {
     variables = {
