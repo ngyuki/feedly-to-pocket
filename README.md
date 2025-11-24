@@ -33,23 +33,25 @@ export SSM_PARAMETER_FEEDLY="/feedly-to-raindrop/feedly-token"
 
 ```sh
 # OAuth 認証サーバーを起動
-ts-node -T src/server.ts
+npx tsx src/server.ts
 
 # ブラウザで OAuth 認証を実行
 open http://localhost:8080/
 
 # 認証完了後、サーバーを停止してバッチを実行
-ts-node -T src/run.ts
+npx tsx src/run.ts
 ```
 
 ## デプロイ
 
 ```sh
+npm ci
+npm run build
 terraform -chdir=terraform init
-terraform -chdir=terraform plan --replace terraform_data.lambda
-terraform -chdir=terraform apply --replace terraform_data.lambda
+terraform -chdir=terraform plan
+terraform -chdir=terraform apply
 
-aws lambda invoke --function-name feedly-to-raindrop --log-type Tail --query 'LogResult' --output text /dev/stdout | base64 -d
+aws lambda invoke --function-name feedly-to-raindrop --log-type Tail --query 'LogResult' --output text /dev/stderr | base64 -d
 ```
 
 ## 動作概要

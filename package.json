@@ -10,10 +10,11 @@
     "devDependencies": {
         "@types/escape-html": "^1.0.4",
         "@types/node": "^22.10.5",
-        "serverless": "^3.38.0"
+        "esbuild": "^0.27.0",
+        "tsx": "^4.20.6"
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "build:lambda": "./scripts/build-lambda.sh"
+        "build": "esbuild src/main.ts --bundle --platform=node --outfile=dist/main.js --sourcemap=inline"
     }
 }

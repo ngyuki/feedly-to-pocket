@@ -1,18 +1,8 @@
 
-resource "terraform_data" "pack" {
-  input = {
-    filename  = local.lambda_zip_path
-    timestamp = plantimestamp()
-  }
-
-  provisioner "local-exec" {
-    command     = "npm ci && npm run build:lambda"
-    working_dir = "${path.module}/.."
-  }
-
-  lifecycle {
-    ignore_changes = [input]
-  }
+data "archive_file" "pack" {
+  type        = "zip"
+  source_file = local.lambda_code_path
+  output_path = local.lambda_zip_path
 }
 
 resource "aws_lambda_function" "main" {
@@ -22,8 +12,8 @@ resource "aws_lambda_function" "main" {
   runtime          = "nodejs22.x"
   memory_size      = local.lambda_memory_size
   timeout          = local.lambda_timeout
-  filename         = terraform_data.pack.output.filename
-  source_code_hash = terraform_data.pack.output.timestamp
+  filename         = data.archive_file.pack.output_path
+  source_code_hash = data.archive_file.pack.output_base64sha256
 
   environment {
     variables = {

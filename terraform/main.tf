@@ -30,11 +30,12 @@ data "aws_region" "current" {}
 
 locals {
   project                = "feedly-to-raindrop"
-  lambda_memory_size     = 128
+  lambda_memory_size     = 256
   lambda_timeout         = 30
   log_retention_days     = 1
   schedule_expression    = "rate(10 minutes)"
   ssm_parameter_feedly   = "/feedly-to-raindrop/feedly-token"
   ssm_parameter_raindrop = "/feedly-to-raindrop/raindrop-token"
-  lambda_zip_path        = "../dist/lambda-package.zip"
+  lambda_code_path       = "${path.root}/../dist/main.js"
+  lambda_zip_path        = "${path.root}/../dist/main.zip"
 }
