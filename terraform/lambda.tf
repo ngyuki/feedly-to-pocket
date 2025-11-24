@@ -19,7 +19,7 @@ resource "aws_lambda_function" "main" {
   function_name    = local.project
   role             = aws_iam_role.lambda.arn
   handler          = "dist/main.handler"
-  runtime          = "nodejs20.x"
+  runtime          = "nodejs22.x"
   memory_size      = local.lambda_memory_size
   timeout          = local.lambda_timeout
   filename         = terraform_data.pack.output.filename

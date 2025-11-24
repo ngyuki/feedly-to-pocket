@@ -9,7 +9,7 @@
     },
     "devDependencies": {
         "@types/escape-html": "^1.0.4",
-        "@types/node": "^20.12.7",
+        "@types/node": "^22.10.5",
         "serverless": "^3.38.0"
     },
     "scripts": {
