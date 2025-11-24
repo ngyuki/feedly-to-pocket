@@ -3,11 +3,11 @@
     "version": "1.0.0",
     "private": true,
     "dependencies": {
-        "aws-sdk": "^2.1603.0",
         "axios": "^1.6.8",
         "escape-html": "^1.0.3"
     },
     "devDependencies": {
+        "@aws-sdk/client-ssm": "^3.936.0",
         "@types/escape-html": "^1.0.4",
         "@types/node": "^22.10.5",
         "esbuild": "^0.27.0",

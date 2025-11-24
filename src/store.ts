@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs'
-import aws from 'aws-sdk'
+import { SSM } from '@aws-sdk/client-ssm'
 import { config } from './config'
 import { FeedlyToken, RaindropToken } from './types'
 
@@ -13,7 +13,7 @@ type StoredRaindropToken = {
     expires_at: number;
 };
 
-const ssm = new aws.SSM();
+const ssm = new SSM();
 
 export async function save_access_token_to_file(token: FeedlyToken) {
     const data: StoredToken = {
@@ -41,11 +41,11 @@ export async function save_access_token(token: FeedlyToken) {
         Type: 'String',
         Value: JSON.stringify(data),
         Overwrite: true,
-    }).promise();
+    });
 }
 
 export async function load_access_token() {
-    const content = await ssm.getParameter({Name: config.ssm_parameter_feedly}).promise();
+    const content = await ssm.getParameter({Name: config.ssm_parameter_feedly});
     if (!content.Parameter || !content.Parameter.Value) {
         throw new Error(`unable get parameter ... ${config.ssm_parameter_feedly}`);
     }
@@ -64,11 +64,11 @@ export async function save_raindrop_access_token(token: RaindropToken) {
         Type: 'String',
         Value: JSON.stringify(data),
         Overwrite: true,
-    }).promise();
+    });
 }
 
 export async function load_raindrop_access_token() {
-    const content = await ssm.getParameter({Name: config.ssm_parameter_raindrop}).promise();
+    const content = await ssm.getParameter({Name: config.ssm_parameter_raindrop});
     if (!content.Parameter || !content.Parameter.Value) {
         throw new Error(`unable get parameter ... ${config.ssm_parameter_raindrop}`);
     }
